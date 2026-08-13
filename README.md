@@ -454,9 +454,9 @@ Development follows this order.
 * [x] GET /me
 * [x] Update full name
 * [x] Change password
-* [ ] MinIO integration
-* [ ] Profile image upload
-* [ ] Profile image replacement
+* [x] MinIO integration
+* [x] Profile image upload
+* [x] Profile image replacement
 
 ## Phase 5 — Administration
 
@@ -737,6 +737,8 @@ Local services:
 PostgreSQL → 127.0.0.1:5433
 Mailpit UI → http://127.0.0.1:8025
 Adminer    → http://127.0.0.1:8080
+MinIO API  → http://127.0.0.1:9000
+MinIO UI   → http://127.0.0.1:9001
 ```
 
 > PostgreSQL is published on host port `5433` to avoid conflicts with a local PostgreSQL installation that may already use `5432`.

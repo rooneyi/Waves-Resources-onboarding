@@ -19,5 +19,8 @@ services:
     App\:
         resource: '../src/'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    App\Service\Storage\ObjectStorageInterface: '@App\Service\Storage\S3ObjectStorage'
+
+when@test:
+    services:
+        App\Service\Storage\ObjectStorageInterface: '@App\Service\Storage\InMemoryObjectStorage'
