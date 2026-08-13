@@ -431,8 +431,8 @@ Development follows this order.
 
 ## Phase 2 — Authentication
 
-* [ ] Registration
-* [ ] Password validation
+* [x] Registration
+* [x] Password validation
 * [ ] Email verification
 * [ ] Login
 * [ ] Access tokens
