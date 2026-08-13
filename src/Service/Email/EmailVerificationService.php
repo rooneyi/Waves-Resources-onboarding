@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Email;
 
 use App\Entity\EmailVerificationToken;
@@ -10,16 +12,16 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
-final class EmailVerificationService
+final readonly class EmailVerificationService
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly EmailVerificationTokenRepository $tokenRepository,
-        private readonly MailerInterface $mailer,
+        private EntityManagerInterface $entityManager,
+        private EmailVerificationTokenRepository $tokenRepository,
+        private MailerInterface $mailer,
         #[Autowire('%env(int:EMAIL_VERIFICATION_TOKEN_TTL)%')]
-        private readonly int $tokenTtlSeconds,
+        private int $tokenTtlSeconds,
         #[Autowire('%env(MAILER_FROM)%')]
-        private readonly string $mailerFrom,
+        private string $mailerFrom,
     ) {
     }
 
@@ -30,7 +32,7 @@ final class EmailVerificationService
     {
         $rawToken = bin2hex(random_bytes(32));
         $tokenHash = hash('sha256', $rawToken);
-        $expiresAt = (new \DateTimeImmutable())->modify(sprintf('+%d seconds', $this->tokenTtlSeconds));
+        $expiresAt = new \DateTimeImmutable()->modify(sprintf('+%d seconds', $this->tokenTtlSeconds));
 
         $token = new EmailVerificationToken($user, $tokenHash, $expiresAt);
         $this->entityManager->persist($token);
@@ -40,7 +42,7 @@ final class EmailVerificationService
 
     public function sendVerificationEmail(User $user, string $rawToken): void
     {
-        $email = (new Email())
+        $email = new Email()
             ->from($this->mailerFrom)
             ->to($user->getEmail())
             ->subject('Verify your Waves account')

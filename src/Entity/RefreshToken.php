@@ -21,27 +21,18 @@ class RefreshToken
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private User $user;
-
-    #[ORM\Column(length: 64)]
-    private string $tokenHash;
-
-    #[ORM\Column]
-    private \DateTimeImmutable $expiresAt;
-
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $revokedAt = null;
 
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
-    public function __construct(User $user, string $tokenHash, \DateTimeImmutable $expiresAt)
+    public function __construct(#[ORM\ManyToOne]
+        #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+        private User $user, #[ORM\Column(length: 64)]
+        private string $tokenHash, #[ORM\Column]
+        private \DateTimeImmutable $expiresAt)
     {
-        $this->user = $user;
-        $this->tokenHash = $tokenHash;
-        $this->expiresAt = $expiresAt;
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -82,7 +73,7 @@ class RefreshToken
 
     public function isRevoked(): bool
     {
-        return null !== $this->revokedAt;
+        return $this->revokedAt instanceof \DateTimeImmutable;
     }
 
     public function revoke(?\DateTimeImmutable $revokedAt = null): void

@@ -10,13 +10,13 @@ namespace App\DTO\Auth;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class LogoutRequest
+final readonly class LogoutRequest
 {
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Length(min: 64, max: 64)]
         #[Assert\Regex(pattern: '/^[a-f0-9]+$/')]
-        public readonly string $refreshToken = '',
+        public string $refreshToken = '',
     ) {
     }
 }

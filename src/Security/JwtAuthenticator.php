@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace App\Security;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\Authentication\JwtAccessTokenService;
 use Firebase\JWT\ExpiredException;
@@ -20,7 +21,6 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
-use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 
@@ -32,13 +32,13 @@ final class JwtAuthenticator extends AbstractAuthenticator implements Authentica
     ) {
     }
 
-    public function supports(Request $request): ?bool
+    public function supports(Request $request): bool
     {
         return $request->headers->has('Authorization')
             && str_starts_with((string) $request->headers->get('Authorization'), 'Bearer ');
     }
 
-    public function authenticate(Request $request): Passport
+    public function authenticate(Request $request): SelfValidatingPassport
     {
         $authorization = (string) $request->headers->get('Authorization');
         $token = trim(substr($authorization, 7));
@@ -56,10 +56,10 @@ final class JwtAuthenticator extends AbstractAuthenticator implements Authentica
         }
 
         return new SelfValidatingPassport(
-            new UserBadge($payload['email'], function (string $userIdentifier) {
+            new UserBadge($payload['email'], function (string $userIdentifier): User {
                 $user = $this->userRepository->findOneByEmail($userIdentifier);
 
-                if (null === $user) {
+                if (!$user instanceof User) {
                     throw new CustomUserMessageAuthenticationException('Invalid access token.');
                 }
 
@@ -73,7 +73,7 @@ final class JwtAuthenticator extends AbstractAuthenticator implements Authentica
         return null;
     }
 
-    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
+    public function onAuthenticationFailure(Request $request, AuthenticationException $exception): JsonResponse
     {
         return new JsonResponse([
             'error' => [
@@ -83,7 +83,7 @@ final class JwtAuthenticator extends AbstractAuthenticator implements Authentica
         ], Response::HTTP_UNAUTHORIZED);
     }
 
-    public function start(Request $request, ?AuthenticationException $authException = null): Response
+    public function start(Request $request, ?AuthenticationException $authException = null): JsonResponse
     {
         return new JsonResponse([
             'error' => [

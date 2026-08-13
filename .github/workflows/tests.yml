@@ -1,0 +1,80 @@
+name: Tests
+
+on:
+  push:
+    branches: [main, feat/**]
+  pull_request:
+
+jobs:
+  phpunit:
+    name: PHPUnit
+    runs-on: ubuntu-latest
+
+    env:
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      APP_SECRET: ${{ secrets.APP_SECRET }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
+      S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      S3_REGION: ${{ secrets.S3_REGION }}
+      MAILER_FROM: ${{ secrets.MAILER_FROM }}
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ${{ secrets.POSTGRES_USER }} -d ${{ secrets.POSTGRES_DB }}"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_pgsql, sodium, openssl
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Prepare test environment
+        run: |
+          cp .env.example .env
+          {
+            echo "APP_ENV=test"
+            echo "APP_SECRET=${APP_SECRET}"
+            echo "DATABASE_URL=\"postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@127.0.0.1:5432/${POSTGRES_DB}?serverVersion=16&charset=utf8\""
+            echo "MAILER_DSN=null://null"
+            echo "MAILER_FROM=${MAILER_FROM}"
+            echo "EMAIL_VERIFICATION_TOKEN_TTL=86400"
+            echo "JWT_SECRET=${JWT_SECRET}"
+            echo "JWT_ACCESS_TOKEN_TTL=900"
+            echo "JWT_REFRESH_TOKEN_TTL=2592000"
+            echo "S3_ENDPOINT=http://127.0.0.1:9000"
+            echo "S3_ACCESS_KEY=${S3_ACCESS_KEY}"
+            echo "S3_SECRET_KEY=${S3_SECRET_KEY}"
+            echo "S3_BUCKET=${S3_BUCKET}"
+            echo "S3_REGION=${S3_REGION}"
+          } >> .env
+
+      - name: Create test database
+        run: php bin/console doctrine:database:create --if-not-exists --env=test
+
+      - name: Run migrations
+        run: php bin/console doctrine:migrations:migrate --no-interaction --env=test
+
+      - name: Run PHPUnit
+        run: php bin/phpunit

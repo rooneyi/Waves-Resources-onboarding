@@ -11,6 +11,7 @@ namespace App\Tests\Functional\Profile;
 use App\Service\Storage\InMemoryObjectStorage;
 use App\Service\Storage\ObjectStorageInterface;
 use App\Tests\Functional\Auth\AuthTestCase;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,7 +19,7 @@ final class ProfileImageTest extends AuthTestCase
 {
     public function testUploadReplaceAndGetProfileImage(): void
     {
-        $client = static::createClient();
+        $client = self::createClient();
         $client->disableReboot();
         $email = sprintf('avatar.%s@example.com', bin2hex(random_bytes(4)));
         $token = $this->login($client, $email);
@@ -43,7 +44,7 @@ final class ProfileImageTest extends AuthTestCase
         self::assertResponseHeaderSame('content-type', 'image/png');
         self::assertNotEmpty($client->getResponse()->getContent());
 
-        $storage = static::getContainer()->get(ObjectStorageInterface::class);
+        $storage = self::getContainer()->get(ObjectStorageInterface::class);
         self::assertInstanceOf(InMemoryObjectStorage::class, $storage);
 
         $replacementPath = $this->createTempPng();
@@ -66,7 +67,7 @@ final class ProfileImageTest extends AuthTestCase
 
     public function testRejectsNonImageUpload(): void
     {
-        $client = static::createClient();
+        $client = self::createClient();
         $email = sprintf('badimg.%s@example.com', bin2hex(random_bytes(4)));
         $token = $this->login($client, $email);
 
@@ -86,7 +87,7 @@ final class ProfileImageTest extends AuthTestCase
         self::assertResponseStatusCodeSame(Response::HTTP_BAD_REQUEST);
     }
 
-    private function login(\Symfony\Bundle\FrameworkBundle\KernelBrowser $client, string $email): string
+    private function login(KernelBrowser $client, string $email): string
     {
         $this->registerVerifiedUser($client, $email);
         $client->request(
@@ -96,10 +97,10 @@ final class ProfileImageTest extends AuthTestCase
             content: json_encode([
                 'email' => $email,
                 'password' => 'SecurePass1',
-            ], JSON_THROW_ON_ERROR),
+            ], \JSON_THROW_ON_ERROR),
         );
         self::assertResponseStatusCodeSame(Response::HTTP_OK);
-        $payload = json_decode($client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $payload = json_decode($client->getResponse()->getContent(), true, 512, \JSON_THROW_ON_ERROR);
 
         return $payload['accessToken'];
     }

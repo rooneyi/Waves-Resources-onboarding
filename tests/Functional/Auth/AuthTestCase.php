@@ -27,7 +27,7 @@ abstract class AuthTestCase extends WebTestCase
                 'fullName' => 'Auth User',
                 'email' => $email,
                 'password' => $password,
-            ], JSON_THROW_ON_ERROR),
+            ], \JSON_THROW_ON_ERROR),
         );
         self::assertResponseStatusCodeSame(Response::HTTP_CREATED);
 
@@ -42,7 +42,7 @@ abstract class AuthTestCase extends WebTestCase
             'POST',
             '/api/v1/auth/verify-email',
             server: ['CONTENT_TYPE' => 'application/json'],
-            content: json_encode(['token' => $rawToken], JSON_THROW_ON_ERROR),
+            content: json_encode(['token' => $rawToken], \JSON_THROW_ON_ERROR),
         );
         self::assertResponseStatusCodeSame(Response::HTTP_OK);
     }

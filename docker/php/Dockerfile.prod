@@ -1,0 +1,58 @@
+# Production image: PHP-FPM with application code baked in.
+FROM php:8.4-fpm-bookworm AS php_base
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        curl \
+        git \
+        libicu-dev \
+        libpq-dev \
+        libzip-dev \
+        unzip \
+    && docker-php-ext-install -j$(nproc) \
+        intl \
+        opcache \
+        pdo_pgsql \
+        zip \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /app
+
+FROM php_base AS vendor
+
+COPY composer.json composer.lock symfony.lock ./
+RUN composer install \
+    --no-dev \
+    --no-interaction \
+    --no-scripts \
+    --prefer-dist \
+    --optimize-autoloader
+
+FROM php_base AS app
+
+ENV APP_ENV=prod
+ENV APP_DEBUG=0
+ENV APP_RUN_MIGRATIONS=1
+
+COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
+RUN chmod +x /usr/local/bin/docker-entrypoint
+
+COPY --from=vendor /app/vendor ./vendor
+COPY bin bin
+COPY config config
+COPY migrations migrations
+COPY public public
+COPY src src
+COPY templates templates
+COPY composer.json composer.lock symfony.lock ./
+
+RUN composer dump-autoload --optimize --classmap-authoritative --no-dev \
+    && mkdir -p var/cache var/log \
+    && chown -R www-data:www-data var
+
+USER www-data
+
+ENTRYPOINT ["docker-entrypoint"]
+CMD ["php-fpm", "-F"]

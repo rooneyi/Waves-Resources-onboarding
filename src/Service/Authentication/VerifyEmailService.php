@@ -9,16 +9,17 @@ declare(strict_types=1);
 namespace App\Service\Authentication;
 
 use App\DTO\Auth\VerifyEmailRequest;
+use App\Entity\EmailVerificationToken;
 use App\Entity\User;
 use App\Service\Email\EmailVerificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-final class VerifyEmailService
+final readonly class VerifyEmailService
 {
     public function __construct(
-        private readonly EmailVerificationService $emailVerificationService,
-        private readonly EntityManagerInterface $entityManager,
+        private EmailVerificationService $emailVerificationService,
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -26,7 +27,7 @@ final class VerifyEmailService
     {
         $token = $this->emailVerificationService->findValidByRawToken($request->token);
 
-        if (null === $token) {
+        if (!$token instanceof EmailVerificationToken) {
             throw new BadRequestHttpException('Invalid or expired verification token.');
         }
 

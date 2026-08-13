@@ -1,20 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DTO\Auth;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class RegisterRequest
+final readonly class RegisterRequest
 {
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Length(min: 2, max: 255)]
-        public readonly string $fullName = '',
+        public string $fullName = '',
 
         #[Assert\NotBlank]
         #[Assert\Email]
         #[Assert\Length(max: 180)]
-        public readonly string $email = '',
+        public string $email = '',
 
         #[Assert\NotBlank]
         #[Assert\Length(min: 8, max: 4096)]
@@ -22,7 +24,7 @@ final class RegisterRequest
             pattern: '/^(?=.*[A-Za-z])(?=.*\d).+$/',
             message: 'Password must contain at least one letter and one number.',
         )]
-        public readonly string $password = '',
+        public string $password = '',
     ) {
     }
 }

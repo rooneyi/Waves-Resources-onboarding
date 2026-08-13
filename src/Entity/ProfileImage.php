@@ -21,28 +21,16 @@ class ProfileImage
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private User $user;
-
-    #[ORM\Column(length: 255)]
-    private string $objectKey;
-
-    #[ORM\Column(length: 100)]
-    private string $mimeType;
-
-    #[ORM\Column]
-    private int $size;
-
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
-    public function __construct(User $user, string $objectKey, string $mimeType, int $size)
+    public function __construct(#[ORM\OneToOne]
+        #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+        private User $user, #[ORM\Column(length: 255)]
+        private string $objectKey, #[ORM\Column(length: 100)]
+        private string $mimeType, #[ORM\Column]
+        private int $size)
     {
-        $this->user = $user;
-        $this->objectKey = $objectKey;
-        $this->mimeType = $mimeType;
-        $this->size = $size;
         $this->createdAt = new \DateTimeImmutable();
     }
 

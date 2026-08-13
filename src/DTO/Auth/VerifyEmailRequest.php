@@ -10,13 +10,13 @@ namespace App\DTO\Auth;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class VerifyEmailRequest
+final readonly class VerifyEmailRequest
 {
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Length(min: 64, max: 64)]
         #[Assert\Regex(pattern: '/^[a-f0-9]+$/')]
-        public readonly string $token = '',
+        public string $token = '',
     ) {
     }
 }

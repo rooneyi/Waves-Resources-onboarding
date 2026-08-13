@@ -10,12 +10,12 @@ namespace App\DTO\Profile;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class UpdateProfileRequest
+final readonly class UpdateProfileRequest
 {
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Length(min: 2, max: 255)]
-        public readonly string $fullName = '',
+        public string $fullName = '',
     ) {
     }
 }

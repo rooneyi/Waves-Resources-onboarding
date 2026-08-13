@@ -14,13 +14,13 @@ use App\Repository\RefreshTokenRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-final class RefreshTokenService
+final readonly class RefreshTokenService
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly RefreshTokenRepository $refreshTokenRepository,
+        private EntityManagerInterface $entityManager,
+        private RefreshTokenRepository $refreshTokenRepository,
         #[Autowire('%env(int:JWT_REFRESH_TOKEN_TTL)%')]
-        private readonly int $refreshTokenTtl,
+        private int $refreshTokenTtl,
     ) {
     }
 
@@ -30,7 +30,7 @@ final class RefreshTokenService
     public function issue(User $user): array
     {
         $rawToken = bin2hex(random_bytes(32));
-        $expiresAt = (new \DateTimeImmutable())->modify(sprintf('+%d seconds', $this->refreshTokenTtl));
+        $expiresAt = new \DateTimeImmutable()->modify(sprintf('+%d seconds', $this->refreshTokenTtl));
         $entity = new RefreshToken($user, hash('sha256', $rawToken), $expiresAt);
 
         $this->entityManager->persist($entity);

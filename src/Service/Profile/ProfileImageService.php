@@ -17,20 +17,20 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-final class ProfileImageService
+final readonly class ProfileImageService
 {
-    private const MAX_BYTES = 2_097_152; // 2 MiB
+    private const int MAX_BYTES = 2_097_152; // 2 MiB
 
-    private const ALLOWED_MIME_TYPES = [
+    private const array ALLOWED_MIME_TYPES = [
         'image/jpeg' => 'jpg',
         'image/png' => 'png',
         'image/webp' => 'webp',
     ];
 
     public function __construct(
-        private readonly ObjectStorageInterface $objectStorage,
-        private readonly ProfileImageRepository $profileImageRepository,
-        private readonly EntityManagerInterface $entityManager,
+        private ObjectStorageInterface $objectStorage,
+        private ProfileImageRepository $profileImageRepository,
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -51,7 +51,7 @@ final class ProfileImageService
         $existing = $this->profileImageRepository->findOneByUser($user);
         $oldKey = $existing?->getObjectKey();
 
-        if (null === $existing) {
+        if (!$existing instanceof ProfileImage) {
             $existing = new ProfileImage($user, $newKey, $validated['mimeType'], $validated['size']);
             $this->entityManager->persist($existing);
         } else {
@@ -80,7 +80,7 @@ final class ProfileImageService
     {
         $image = $this->profileImageRepository->findOneByUser($user);
 
-        if (null === $image) {
+        if (!$image instanceof ProfileImage) {
             throw new NotFoundHttpException('Profile image not found.');
         }
 
@@ -112,7 +112,7 @@ final class ProfileImageService
             throw new BadRequestHttpException('Unable to read uploaded file.');
         }
 
-        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+        $finfo = new \finfo(\FILEINFO_MIME_TYPE);
         $mimeType = $finfo->buffer($contents) ?: '';
 
         if (!isset(self::ALLOWED_MIME_TYPES[$mimeType])) {

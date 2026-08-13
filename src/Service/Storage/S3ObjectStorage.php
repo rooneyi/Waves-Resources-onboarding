@@ -12,21 +12,21 @@ use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-final class S3ObjectStorage implements ObjectStorageInterface
+final readonly class S3ObjectStorage implements ObjectStorageInterface
 {
-    private readonly S3Client $client;
+    private S3Client $client;
 
     public function __construct(
         #[Autowire('%env(S3_ENDPOINT)%')]
-        private readonly string $endpoint,
+        private string $endpoint,
         #[Autowire('%env(S3_ACCESS_KEY)%')]
-        private readonly string $accessKey,
+        private string $accessKey,
         #[Autowire('%env(S3_SECRET_KEY)%')]
-        private readonly string $secretKey,
+        private string $secretKey,
         #[Autowire('%env(S3_BUCKET)%')]
-        private readonly string $bucket,
+        private string $bucket,
         #[Autowire('%env(S3_REGION)%')]
-        private readonly string $region,
+        private string $region,
     ) {
         $this->client = new S3Client([
             'version' => 'latest',

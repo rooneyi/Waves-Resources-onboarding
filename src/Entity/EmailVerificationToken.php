@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\EmailVerificationTokenRepository;
@@ -15,27 +17,18 @@ class EmailVerificationToken
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private User $user;
-
-    #[ORM\Column(length: 64)]
-    private string $tokenHash;
-
-    #[ORM\Column]
-    private \DateTimeImmutable $expiresAt;
-
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $usedAt = null;
 
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
-    public function __construct(User $user, string $tokenHash, \DateTimeImmutable $expiresAt)
+    public function __construct(#[ORM\ManyToOne]
+        #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+        private User $user, #[ORM\Column(length: 64)]
+        private string $tokenHash, #[ORM\Column]
+        private \DateTimeImmutable $expiresAt)
     {
-        $this->user = $user;
-        $this->tokenHash = $tokenHash;
-        $this->expiresAt = $expiresAt;
         $this->createdAt = new \DateTimeImmutable();
     }
 
@@ -76,7 +69,7 @@ class EmailVerificationToken
 
     public function isUsed(): bool
     {
-        return null !== $this->usedAt;
+        return $this->usedAt instanceof \DateTimeImmutable;
     }
 
     public function markUsed(?\DateTimeImmutable $usedAt = null): void

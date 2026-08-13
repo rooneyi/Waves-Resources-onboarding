@@ -15,18 +15,18 @@ final class HealthTest extends WebTestCase
 {
     public function testHealthEndpointReturnsOk(): void
     {
-        $client = static::createClient();
+        $client = self::createClient();
         $client->request('GET', '/health');
 
         self::assertResponseStatusCodeSame(Response::HTTP_OK);
-        $payload = json_decode($client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $payload = json_decode($client->getResponse()->getContent(), true, 512, \JSON_THROW_ON_ERROR);
         self::assertSame('ok', $payload['status']);
         self::assertSame('ok', $payload['checks']['database']);
     }
 
     public function testApiDocIsPublic(): void
     {
-        $client = static::createClient();
+        $client = self::createClient();
         $client->request('GET', '/api/doc.json');
 
         self::assertResponseStatusCodeSame(Response::HTTP_OK);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service\Authentication;
 
 use App\DTO\Auth\RegisterRequest;
@@ -12,19 +14,19 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-final class RegistrationService
+final readonly class RegistrationService
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly UserRepository $userRepository,
-        private readonly UserPasswordHasherInterface $passwordHasher,
-        private readonly EmailVerificationService $emailVerificationService,
+        private EntityManagerInterface $entityManager,
+        private UserRepository $userRepository,
+        private UserPasswordHasherInterface $passwordHasher,
+        private EmailVerificationService $emailVerificationService,
     ) {
     }
 
     public function register(RegisterRequest $request): User
     {
-        if (null !== $this->userRepository->findOneByEmail($request->email)) {
+        if ($this->userRepository->findOneByEmail($request->email) instanceof User) {
             throw new ConflictHttpException('An account with this email already exists.');
         }
 

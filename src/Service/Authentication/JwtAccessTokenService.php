@@ -13,13 +13,13 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-final class JwtAccessTokenService
+final readonly class JwtAccessTokenService
 {
     public function __construct(
         #[Autowire('%env(JWT_SECRET)%')]
-        private readonly string $jwtSecret,
+        private string $jwtSecret,
         #[Autowire('%env(int:JWT_ACCESS_TOKEN_TTL)%')]
-        private readonly int $accessTokenTtl,
+        private int $accessTokenTtl,
     ) {
     }
 

@@ -11,6 +11,7 @@ namespace App\Service\Authentication;
 use App\DTO\Auth\LoginRequest;
 use App\DTO\Auth\LogoutRequest;
 use App\DTO\Auth\RefreshTokenRequest;
+use App\Entity\RefreshToken;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,14 +19,14 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-final class AuthenticationService
+final readonly class AuthenticationService
 {
     public function __construct(
-        private readonly UserRepository $userRepository,
-        private readonly UserPasswordHasherInterface $passwordHasher,
-        private readonly JwtAccessTokenService $jwtAccessTokenService,
-        private readonly RefreshTokenService $refreshTokenService,
-        private readonly EntityManagerInterface $entityManager,
+        private UserRepository $userRepository,
+        private UserPasswordHasherInterface $passwordHasher,
+        private JwtAccessTokenService $jwtAccessTokenService,
+        private RefreshTokenService $refreshTokenService,
+        private EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -36,7 +37,7 @@ final class AuthenticationService
     {
         $user = $this->userRepository->findOneByEmail($request->email);
 
-        if (null === $user || !$this->passwordHasher->isPasswordValid($user, $request->password)) {
+        if (!$user instanceof User || !$this->passwordHasher->isPasswordValid($user, $request->password)) {
             throw new UnauthorizedHttpException('Bearer', 'Invalid credentials.');
         }
 
@@ -54,7 +55,7 @@ final class AuthenticationService
     {
         $refreshToken = $this->refreshTokenService->findValid($request->refreshToken);
 
-        if (null === $refreshToken) {
+        if (!$refreshToken instanceof RefreshToken) {
             throw new UnauthorizedHttpException('Bearer', 'Invalid refresh token.');
         }
 
@@ -73,7 +74,7 @@ final class AuthenticationService
     {
         $refreshToken = $this->refreshTokenService->findValid($request->refreshToken);
 
-        if (null === $refreshToken) {
+        if (!$refreshToken instanceof RefreshToken) {
             return;
         }
 

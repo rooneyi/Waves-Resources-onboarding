@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -68,7 +70,7 @@ final class ApiExceptionSubscriber implements EventSubscriberInterface
             $event->setResponse(new JsonResponse([
                 'error' => [
                     'code' => $code,
-                    'message' => $throwable->getMessage() !== ''
+                    'message' => '' !== $throwable->getMessage()
                         ? $throwable->getMessage()
                         : Response::$statusTexts[$status] ?? 'Error',
                 ],

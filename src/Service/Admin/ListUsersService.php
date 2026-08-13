@@ -11,10 +11,10 @@ namespace App\Service\Admin;
 use App\DTO\Admin\ListUsersQuery;
 use App\Repository\UserRepository;
 
-final class ListUsersService
+final readonly class ListUsersService
 {
     public function __construct(
-        private readonly UserRepository $userRepository,
+        private UserRepository $userRepository,
     ) {
     }
 
@@ -44,7 +44,7 @@ final class ListUsersService
             ];
         }
 
-        $pages = (int) max(1, (int) ceil($result['total'] / $query->limit));
+        $pages = max(1, (int) ceil($result['total'] / $query->limit));
 
         return [
             'data' => $data,

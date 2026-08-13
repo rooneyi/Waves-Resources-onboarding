@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Enum\Role;
@@ -30,7 +32,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var list<string> The user roles
      */
     #[ORM\Column(type: Types::JSON)]
-    private array $roles = [];
+    private array $roles;
 
     #[ORM\Column]
     private string $password = '';

@@ -1,0 +1,63 @@
+name: PHPStan
+
+on:
+  push:
+    branches: [main, feat/**]
+  pull_request:
+
+jobs:
+  phpstan:
+    name: Static analysis
+    runs-on: ubuntu-latest
+
+    env:
+      APP_ENV: test
+      APP_SECRET: ${{ secrets.APP_SECRET }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      DATABASE_URL: postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@127.0.0.1:5432/${{ secrets.POSTGRES_DB }}?serverVersion=16&charset=utf8
+      MAILER_DSN: null://null
+      MAILER_FROM: ${{ secrets.MAILER_FROM }}
+      EMAIL_VERIFICATION_TOKEN_TTL: 86400
+      JWT_ACCESS_TOKEN_TTL: 900
+      JWT_REFRESH_TOKEN_TTL: 2592000
+      S3_ENDPOINT: http://127.0.0.1:9000
+      S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
+      S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      S3_REGION: ${{ secrets.S3_REGION }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_pgsql, sodium, openssl
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Prepare environment file
+        run: |
+          cp .env.example .env
+          {
+            echo "APP_ENV=${APP_ENV}"
+            echo "APP_SECRET=${APP_SECRET}"
+            echo "DATABASE_URL=\"${DATABASE_URL}\""
+            echo "MAILER_DSN=${MAILER_DSN}"
+            echo "MAILER_FROM=${MAILER_FROM}"
+            echo "EMAIL_VERIFICATION_TOKEN_TTL=${EMAIL_VERIFICATION_TOKEN_TTL}"
+            echo "JWT_SECRET=${JWT_SECRET}"
+            echo "JWT_ACCESS_TOKEN_TTL=${JWT_ACCESS_TOKEN_TTL}"
+            echo "JWT_REFRESH_TOKEN_TTL=${JWT_REFRESH_TOKEN_TTL}"
+            echo "S3_ENDPOINT=${S3_ENDPOINT}"
+            echo "S3_ACCESS_KEY=${S3_ACCESS_KEY}"
+            echo "S3_SECRET_KEY=${S3_SECRET_KEY}"
+            echo "S3_BUCKET=${S3_BUCKET}"
+            echo "S3_REGION=${S3_REGION}"
+          } >> .env
+
+      - name: Run PHPStan
+        run: composer lint:phpstan

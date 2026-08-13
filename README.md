@@ -98,6 +98,9 @@ Feature quantity is intentionally secondary to correctness and engineering quali
 | Email Catcher | Mailpit |
 | API Documentation | OpenAPI / NelmioApiDocBundle |
 | Testing | PHPUnit / Symfony Test Pack |
+| Static analysis | PHPStan |
+| Coding standards | PHP-CS-Fixer |
+| Refactoring | Rector |
 | Containers | Docker / Docker Compose |
 | Logging | Monolog |
 | CI | GitHub Actions |
@@ -485,7 +488,8 @@ Development follows this order.
 * [ ] Refresh-token reuse detection
 * [ ] Administrator audit log
 * [ ] Basic metrics
-* [ ] CI pipeline
+* [x] CI pipeline
+* [x] Deployment pipeline
 
 ---
 
@@ -805,6 +809,27 @@ Run tests:
 php bin/phpunit
 ```
 
+## Code quality
+
+Static analysis and coding standards:
+
+```bash
+composer lint          # CS Fixer + PHPStan + Rector (dry-run)
+composer lint:cs       # PHP-CS-Fixer dry-run
+composer lint:cs-fix  # apply CS Fixer
+composer lint:phpstan  # PHPStan level 6
+composer lint:rector   # Rector dry-run
+composer rector        # apply Rector
+```
+
+These checks also run as separate GitHub Actions workflows:
+
+- `.github/workflows/php-cs-fixer.yml`
+- `.github/workflows/phpstan.yml`
+- `.github/workflows/rector.yml`
+- `.github/workflows/tests.yml`
+- `.github/workflows/deploy.yml` (push to `main` or manual)
+
 ---
 
 # Testing
@@ -886,6 +911,45 @@ S3_REGION=
 ```
 
 Actual secrets must never be committed.
+
+## GitHub Actions secrets
+
+CI workflows under `.github/workflows/` read credentials from repository secrets.
+Configure them under **Settings → Secrets and variables → Actions**:
+
+| Secret | Purpose |
+|---|---|
+| `POSTGRES_DB` | Test database name |
+| `POSTGRES_USER` | Test database user |
+| `POSTGRES_PASSWORD` | Test database password |
+| `APP_SECRET` | Symfony application secret |
+| `JWT_SECRET` | JWT signing secret (≥ 32 characters) |
+| `S3_ACCESS_KEY` | MinIO/S3 access key used in tests |
+| `S3_SECRET_KEY` | MinIO/S3 secret key used in tests |
+| `S3_BUCKET` | Profile-image bucket name |
+| `S3_REGION` | S3 region |
+| `MAILER_FROM` | Outgoing mail From address |
+| `DEPLOY_HOST` | Production SSH host |
+| `DEPLOY_USER` | Production SSH user |
+| `DEPLOY_SSH_KEY` | Private SSH key for deploy |
+| `DEPLOY_PORT` | SSH port (default `22` if unset by the action) |
+| `DEPLOY_PATH` | Absolute path to the compose project on the server |
+| `DEPLOY_GHCR_USER` | GitHub username/org used to pull from GHCR |
+| `DEPLOY_GHCR_TOKEN` | PAT (or token) with `read:packages` for the server |
+
+Also create a GitHub Environment named `production` (used by the deploy job).
+
+### Deploy workflow
+
+`.github/workflows/deploy.yml`:
+
+1. Builds `docker/php/Dockerfile.prod`
+2. Pushes the image to `ghcr.io/<owner>/<repo>`
+3. SSHs to the server, pulls images, and runs `docker compose up -d`
+
+Trigger: push to `main`, or **Actions → Deploy → Run workflow**.
+
+The server `compose` stack must reference the GHCR image for the PHP service.
 
 ---
 
@@ -1053,7 +1117,6 @@ Potential future improvements include:
 * password reset;
 * administrator audit logging;
 * metrics and tracing;
-* deployment pipeline;
 * production secrets management;
 * advanced observability.
 

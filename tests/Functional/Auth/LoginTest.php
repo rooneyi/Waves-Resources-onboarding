@@ -14,7 +14,7 @@ final class LoginTest extends AuthTestCase
 {
     public function testValidLoginReturnsTokenPair(): void
     {
-        $client = static::createClient();
+        $client = self::createClient();
         $email = sprintf('login.%s@example.com', bin2hex(random_bytes(4)));
         $this->registerVerifiedUser($client, $email);
 
@@ -25,11 +25,11 @@ final class LoginTest extends AuthTestCase
             content: json_encode([
                 'email' => $email,
                 'password' => 'SecurePass1',
-            ], JSON_THROW_ON_ERROR),
+            ], \JSON_THROW_ON_ERROR),
         );
 
         self::assertResponseStatusCodeSame(Response::HTTP_OK);
-        $payload = json_decode($client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $payload = json_decode($client->getResponse()->getContent(), true, 512, \JSON_THROW_ON_ERROR);
 
         self::assertSame('Bearer', $payload['tokenType']);
         self::assertSame(900, $payload['expiresIn']);
@@ -40,7 +40,7 @@ final class LoginTest extends AuthTestCase
 
     public function testInvalidCredentialsReturnUnauthorized(): void
     {
-        $client = static::createClient();
+        $client = self::createClient();
         $email = sprintf('badlogin.%s@example.com', bin2hex(random_bytes(4)));
         $this->registerVerifiedUser($client, $email);
 
@@ -51,18 +51,18 @@ final class LoginTest extends AuthTestCase
             content: json_encode([
                 'email' => $email,
                 'password' => 'WrongPass1',
-            ], JSON_THROW_ON_ERROR),
+            ], \JSON_THROW_ON_ERROR),
         );
 
         self::assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
-        $payload = json_decode($client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $payload = json_decode($client->getResponse()->getContent(), true, 512, \JSON_THROW_ON_ERROR);
         self::assertSame('unauthorized', $payload['error']['code']);
         self::assertSame('Invalid credentials.', $payload['error']['message']);
     }
 
     public function testUnverifiedUserCannotLogin(): void
     {
-        $client = static::createClient();
+        $client = self::createClient();
         $email = sprintf('unverified.%s@example.com', bin2hex(random_bytes(4)));
 
         $client->request(
@@ -73,7 +73,7 @@ final class LoginTest extends AuthTestCase
                 'fullName' => 'Unverified User',
                 'email' => $email,
                 'password' => 'SecurePass1',
-            ], JSON_THROW_ON_ERROR),
+            ], \JSON_THROW_ON_ERROR),
         );
         self::assertResponseStatusCodeSame(Response::HTTP_CREATED);
 
@@ -84,7 +84,7 @@ final class LoginTest extends AuthTestCase
             content: json_encode([
                 'email' => $email,
                 'password' => 'SecurePass1',
-            ], JSON_THROW_ON_ERROR),
+            ], \JSON_THROW_ON_ERROR),
         );
 
         self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -92,7 +92,7 @@ final class LoginTest extends AuthTestCase
 
     public function testRefreshAndLogout(): void
     {
-        $client = static::createClient();
+        $client = self::createClient();
         $email = sprintf('refresh.%s@example.com', bin2hex(random_bytes(4)));
         $this->registerVerifiedUser($client, $email);
 
@@ -103,25 +103,25 @@ final class LoginTest extends AuthTestCase
             content: json_encode([
                 'email' => $email,
                 'password' => 'SecurePass1',
-            ], JSON_THROW_ON_ERROR),
+            ], \JSON_THROW_ON_ERROR),
         );
-        $login = json_decode($client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $login = json_decode($client->getResponse()->getContent(), true, 512, \JSON_THROW_ON_ERROR);
 
         $client->request(
             'POST',
             '/api/v1/auth/refresh',
             server: ['CONTENT_TYPE' => 'application/json'],
-            content: json_encode(['refreshToken' => $login['refreshToken']], JSON_THROW_ON_ERROR),
+            content: json_encode(['refreshToken' => $login['refreshToken']], \JSON_THROW_ON_ERROR),
         );
         self::assertResponseStatusCodeSame(Response::HTTP_OK);
-        $refreshed = json_decode($client->getResponse()->getContent(), true, 512, JSON_THROW_ON_ERROR);
+        $refreshed = json_decode($client->getResponse()->getContent(), true, 512, \JSON_THROW_ON_ERROR);
         self::assertNotSame($login['refreshToken'], $refreshed['refreshToken']);
 
         $client->request(
             'POST',
             '/api/v1/auth/logout',
             server: ['CONTENT_TYPE' => 'application/json'],
-            content: json_encode(['refreshToken' => $refreshed['refreshToken']], JSON_THROW_ON_ERROR),
+            content: json_encode(['refreshToken' => $refreshed['refreshToken']], \JSON_THROW_ON_ERROR),
         );
         self::assertResponseStatusCodeSame(Response::HTTP_NO_CONTENT);
 
@@ -129,7 +129,7 @@ final class LoginTest extends AuthTestCase
             'POST',
             '/api/v1/auth/refresh',
             server: ['CONTENT_TYPE' => 'application/json'],
-            content: json_encode(['refreshToken' => $refreshed['refreshToken']], JSON_THROW_ON_ERROR),
+            content: json_encode(['refreshToken' => $refreshed['refreshToken']], \JSON_THROW_ON_ERROR),
         );
         self::assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
