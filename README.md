@@ -700,10 +700,13 @@ Development infrastructure:
 ```text
 Docker Compose
 │
-├── Symfony API
+├── nginx        → API HTTP (port 8000)
+├── php          → Symfony PHP-FPM
+├── frontend     → optional SPA (profile frontend, port 3000)
 ├── PostgreSQL
 ├── MinIO
-└── Mailpit
+├── Mailpit
+└── Adminer
 ```
 
 The system should be runnable by another engineer without requiring paid external services.
@@ -719,26 +722,49 @@ git clone <repository-url>
 cd waves-resources-onboarding-api
 ```
 
-Create local environment configuration:
+Ensure `.env` exists (copy from `.env.example` if needed) with `APP_SECRET` and `JWT_SECRET` set.
+
+## Option A — full stack in Docker (recommended)
+
+Start API + infrastructure:
 
 ```bash
-cp .env.example .env.local
+docker compose up -d --build
 ```
 
-Start infrastructure:
+Optional frontend placeholder (replace `docker/frontend` with the real SPA later):
 
 ```bash
-docker compose up -d
+docker compose --profile frontend up -d --build
 ```
 
 Local services:
 
 ```text
+API        → http://127.0.0.1:8000
+Swagger    → http://127.0.0.1:8000/api/doc
+Frontend   → http://127.0.0.1:3000   (profile frontend)
 PostgreSQL → 127.0.0.1:5433
 Mailpit UI → http://127.0.0.1:8025
 Adminer    → http://127.0.0.1:8080
 MinIO API  → http://127.0.0.1:9000
 MinIO UI   → http://127.0.0.1:9001
+```
+
+> Inside Compose, the PHP container talks to services by hostname (`database`, `mailer`, `minio`). Host ports above are for tools running on your machine.
+
+Seed an admin (once containers are up):
+
+```bash
+docker compose exec php php bin/console app:seed-admin --email=admin@waves.local --password=AdminPass1
+```
+
+## Option B — PHP on the host, infra in Docker
+
+Start infrastructure only:
+
+```bash
+docker compose up -d database mailer adminer minio createbuckets
 ```
 
 > PostgreSQL is published on host port `5433` to avoid conflicts with a local PostgreSQL installation that may already use `5432`.

@@ -1,4 +1,3 @@
-
 services:
 ###> doctrine/doctrine-bundle ###
   database:
@@ -59,3 +58,14 @@ services:
       S3_ACCESS_KEY: ${S3_ACCESS_KEY:-minio}
       S3_SECRET_KEY: ${S3_SECRET_KEY:-minio123}
       S3_BUCKET: ${S3_BUCKET:-waves-profile-images}
+
+  php:
+    depends_on:
+      database:
+        condition: service_healthy
+      mailer:
+        condition: service_started
+      minio:
+        condition: service_healthy
+      createbuckets:
+        condition: service_completed_successfully
