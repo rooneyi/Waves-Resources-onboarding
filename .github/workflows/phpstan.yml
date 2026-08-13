@@ -12,19 +12,19 @@ jobs:
 
     env:
       APP_ENV: test
-      APP_SECRET: ${{ secrets.APP_SECRET }}
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      DATABASE_URL: postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@127.0.0.1:5432/${{ secrets.POSTGRES_DB }}?serverVersion=16&charset=utf8
+      APP_SECRET: ${{ secrets.APP_SECRET || 'ci_app_secret_change_me_32_chars_min' }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET || 'ci_jwt_secret_change_me_32_chars_min' }}
+      DATABASE_URL: postgresql://app:ChangeMe@127.0.0.1:5432/app?serverVersion=16&charset=utf8
       MAILER_DSN: null://null
-      MAILER_FROM: ${{ secrets.MAILER_FROM }}
+      MAILER_FROM: ${{ secrets.MAILER_FROM || 'noreply@waves.local' }}
       EMAIL_VERIFICATION_TOKEN_TTL: 86400
       JWT_ACCESS_TOKEN_TTL: 900
       JWT_REFRESH_TOKEN_TTL: 2592000
       S3_ENDPOINT: http://127.0.0.1:9000
-      S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
-      S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
-      S3_BUCKET: ${{ secrets.S3_BUCKET }}
-      S3_REGION: ${{ secrets.S3_REGION }}
+      S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY || 'minio' }}
+      S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY || 'minio123' }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET || 'waves-profile-images' }}
+      S3_REGION: ${{ secrets.S3_REGION || 'us-east-1' }}
 
     steps:
       - uses: actions/checkout@v4

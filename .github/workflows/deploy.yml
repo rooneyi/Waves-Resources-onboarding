@@ -1,8 +1,7 @@
 name: Deploy
 
 on:
-  push:
-    branches: [main]
+  # Manual only — avoid failing every push when no production host is configured.
   workflow_dispatch:
 
 permissions:

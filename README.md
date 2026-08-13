@@ -865,40 +865,39 @@ Actual secrets must never be committed.
 
 ## GitHub Actions secrets
 
-CI workflows under `.github/workflows/` read credentials from repository secrets.
-Configure them under **Settings → Secrets and variables → Actions**:
+CI (Tests / PHPStan) uses **safe ephemeral defaults** when secrets are not set
+(`app` / `ChangeMe` for Postgres, CI placeholders for `APP_SECRET` / `JWT_SECRET`).
+
+Optional overrides under **Settings → Secrets and variables → Actions**:
 
 | Secret | Purpose |
 |---|---|
-| `POSTGRES_DB` | Test database name |
-| `POSTGRES_USER` | Test database user |
-| `POSTGRES_PASSWORD` | Test database password |
-| `APP_SECRET` | Symfony application secret |
-| `JWT_SECRET` | JWT signing secret (≥ 32 characters) |
-| `S3_ACCESS_KEY` | MinIO/S3 access key used in tests |
-| `S3_SECRET_KEY` | MinIO/S3 secret key used in tests |
-| `S3_BUCKET` | Profile-image bucket name |
-| `S3_REGION` | S3 region |
-| `MAILER_FROM` | Outgoing mail From address |
+| `APP_SECRET` | Override Symfony app secret in CI |
+| `JWT_SECRET` | Override JWT signing secret in CI |
+| `S3_ACCESS_KEY` / `S3_SECRET_KEY` / `S3_BUCKET` / `S3_REGION` | Override S3 test values |
+| `MAILER_FROM` | Override mail From address in CI |
 | `DEPLOY_HOST` | Production SSH host |
 | `DEPLOY_USER` | Production SSH user |
 | `DEPLOY_SSH_KEY` | Private SSH key for deploy |
-| `DEPLOY_PORT` | SSH port (default `22` if unset by the action) |
+| `DEPLOY_PORT` | SSH port |
 | `DEPLOY_PATH` | Absolute path to the compose project on the server |
 | `DEPLOY_GHCR_USER` | GitHub username/org used to pull from GHCR |
-| `DEPLOY_GHCR_TOKEN` | PAT (or token) with `read:packages` for the server |
+| `DEPLOY_GHCR_TOKEN` | PAT with `read:packages` for the server |
 
 Also create a GitHub Environment named `production` (used by the deploy job).
 
+> If Actions show *“account is locked due to a billing issue”*, fix billing under
+> GitHub **Settings → Billing** — workflows cannot start until that is resolved.
+
 ### Deploy workflow
 
-`.github/workflows/deploy.yml`:
+`.github/workflows/deploy.yml` (manual only):
 
 1. Builds `docker/php/Dockerfile.prod`
 2. Pushes the image to `ghcr.io/<owner>/<repo>`
 3. SSHs to the server, pulls images, and runs `docker compose up -d`
 
-Trigger: push to `main`, or **Actions → Deploy → Run workflow**.
+Trigger: **Actions → Deploy → Run workflow**.
 
 The server `compose` stack must reference the GHCR image for the PHP service.
 
