@@ -34,4 +34,54 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         return $this->findOneBy(['email' => strtolower(trim($email))]);
     }
+
+    /**
+     * @return array{items: list<User>, total: int}
+     */
+    public function searchAdminUsers(
+        int $page,
+        int $limit,
+        ?string $role,
+        ?bool $verified,
+        string $sort,
+        string $direction,
+    ): array {
+        $qb = $this->createQueryBuilder('u');
+
+        if (null !== $role) {
+            $qb->andWhere('u.roles LIKE :role')
+                ->setParameter('role', '%"'.$role.'"%');
+        }
+
+        if (null !== $verified) {
+            $qb->andWhere('u.emailVerified = :verified')
+                ->setParameter('verified', $verified);
+        }
+
+        $sortField = match ($sort) {
+            'fullName' => 'u.fullName',
+            default => 'u.createdAt',
+        };
+        $sortDirection = 'asc' === strtolower($direction) ? 'ASC' : 'DESC';
+        $qb->orderBy($sortField, $sortDirection);
+
+        $countQb = clone $qb;
+        $total = (int) $countQb
+            ->select('COUNT(u.id)')
+            ->resetDQLPart('orderBy')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        $items = $qb
+            ->select('u')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+
+        return [
+            'items' => $items,
+            'total' => $total,
+        ];
+    }
 }

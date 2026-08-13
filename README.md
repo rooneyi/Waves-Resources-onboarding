@@ -442,29 +442,29 @@ Development follows this order.
 
 ## Phase 3 — Authorization
 
-* [ ] ROLE_USER
-* [ ] ROLE_ADMIN
-* [ ] Authorization rules
-* [ ] Voters where appropriate
-* [ ] IDOR/BOLA protection
-* [ ] Security tests
+* [x] ROLE_USER
+* [x] ROLE_ADMIN
+* [x] Authorization rules
+* [x] Voters where appropriate
+* [x] IDOR/BOLA protection
+* [x] Security tests
 
 ## Phase 4 — Profile
 
-* [ ] GET /me
-* [ ] Update full name
-* [ ] Change password
+* [x] GET /me
+* [x] Update full name
+* [x] Change password
 * [ ] MinIO integration
 * [ ] Profile image upload
 * [ ] Profile image replacement
 
 ## Phase 5 — Administration
 
-* [ ] User listing
-* [ ] Pagination
-* [ ] Filtering
-* [ ] Sorting
-* [ ] Admin authorization
+* [x] User listing
+* [x] Pagination
+* [x] Filtering
+* [x] Sorting
+* [x] Admin authorization
 
 ## Phase 6 — Quality
 
