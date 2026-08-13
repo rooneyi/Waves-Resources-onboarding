@@ -16,7 +16,6 @@ The primary objective is not feature quantity, but demonstrating sound engineeri
 - [Architecture](#architecture)
 - [API Versioning](#api-versioning)
 - [Core Features](#core-features)
-- [Project Roadmap](#project-roadmap)
 - [Project Structure](#project-structure)
 - [Security Model](#security-model)
 - [Data Model](#data-model)
@@ -416,83 +415,6 @@ The old object is deleted only after successful storage of the replacement.
 
 ---
 
-# Project Roadmap
-
-Development follows this order.
-
-## Phase 1 — Foundation
-
-* [x] Initialize Symfony project
-* [x] Configure Docker
-* [x] Configure PostgreSQL
-* [x] Configure Doctrine
-* [x] Configure migrations
-* [x] Configure environment variables
-* [x] Create User entity
-* [x] Create roles
-* [x] Configure password hashing
-
-## Phase 2 — Authentication
-
-* [x] Registration
-* [x] Password validation
-* [x] Email verification
-* [x] Login
-* [x] Access tokens
-* [x] Refresh tokens
-* [x] Logout
-* [x] Rate limiting
-
-## Phase 3 — Authorization
-
-* [x] ROLE_USER
-* [x] ROLE_ADMIN
-* [x] Authorization rules
-* [x] Voters where appropriate
-* [x] IDOR/BOLA protection
-* [x] Security tests
-
-## Phase 4 — Profile
-
-* [x] GET /me
-* [x] Update full name
-* [x] Change password
-* [x] MinIO integration
-* [x] Profile image upload
-* [x] Profile image replacement
-
-## Phase 5 — Administration
-
-* [x] User listing
-* [x] Pagination
-* [x] Filtering
-* [x] Sorting
-* [x] Admin authorization
-
-## Phase 6 — Quality
-
-* [x] OpenAPI documentation
-* [x] Health check
-* [x] Structured logging
-* [x] Seeded administrator
-* [x] Integration tests
-* [x] Security tests
-* [x] Docker verification
-* [x] README completion
-* [x] GitHub Actions CI
-
-## Optional Stretch Goals
-
-* [ ] Password reset
-* [ ] Refresh-token rotation
-* [ ] Refresh-token reuse detection
-* [ ] Administrator audit log
-* [ ] Basic metrics
-* [x] CI pipeline
-* [x] Deployment pipeline
-
----
-
 # Project Structure
 
 ```text
@@ -719,34 +641,74 @@ The system should be runnable by another engineer without requiring paid externa
 
 # Development Setup
 
-Clone the repository:
+## Clone
 
 ```bash
-git clone <repository-url>
-cd waves-resources-onboarding-api
+git clone https://github.com/rooneyi/Waves-Resources-onboarding.git
+cd Waves-Resources-onboarding
 ```
 
-Ensure `.env` exists (copy from `.env.example` if needed) with `APP_SECRET` and `JWT_SECRET` set.
+## Development objectives
 
-## Option A — full stack in Docker (recommended)
+1. Secure authentication and authorization.
+2. Explicit protection against IDOR/BOLA vulnerabilities.
+3. Strong input validation.
+4. Secure password storage (Argon2id).
+5. Short-lived access tokens with refresh-token management.
+6. Reliable email verification.
+7. Safe object-storage integration for profile images.
+8. Automated security-focused testing.
+9. Reproducible local development using Docker Compose.
+10. Clear API documentation (OpenAPI / Swagger).
+11. Maintainable and understandable code.
 
-Start API + infrastructure:
+## Prerequisites
+
+- Docker Desktop (or Docker Engine + Compose)
+- Git
+
+Optional (host PHP workflow only): PHP 8.4+ with `pdo_pgsql`, Composer.
+
+## 1. Environment
+
+```bash
+cp .env.example .env
+```
+
+Set at least:
+
+- `APP_SECRET`
+- `JWT_SECRET` (long random string)
+
+`.env.example` already contains working local defaults for Postgres, Mailpit, and MinIO.
+
+## 2. Start the stack
 
 ```bash
 docker compose up -d --build
 ```
 
-Optional frontend placeholder (replace `docker/frontend` with the real SPA later):
+This starts nginx, PHP-FPM, PostgreSQL, MinIO, Mailpit, and Adminer.
+Migrations run automatically on PHP container start.
+
+Optional frontend placeholder:
 
 ```bash
 docker compose --profile frontend up -d --build
 ```
 
-Local services:
+## 3. Seed an administrator
+
+```bash
+docker compose exec php php bin/console app:seed-admin --email=admin@waves.local --password=AdminPass1
+```
+
+## 4. Local services
 
 ```text
 API        → http://127.0.0.1:8000
 Swagger    → http://127.0.0.1:8000/api/doc
+Health     → http://127.0.0.1:8000/health
 Frontend   → http://127.0.0.1:3000   (profile frontend)
 PostgreSQL → 127.0.0.1:5433
 Mailpit UI → http://127.0.0.1:8025
@@ -755,80 +717,69 @@ MinIO API  → http://127.0.0.1:9000
 MinIO UI   → http://127.0.0.1:9001
 ```
 
-> Inside Compose, the PHP container talks to services by hostname (`database`, `mailer`, `minio`). Host ports above are for tools running on your machine.
+Inside Compose, PHP talks to services by hostname (`database`, `mailer`, `minio`).
 
-Seed an admin (once containers are up):
+## 5. Install dependencies (host)
 
-```bash
-docker compose exec php php bin/console app:seed-admin --email=admin@waves.local --password=AdminPass1
-```
-
-## Option B — PHP on the host, infra in Docker
-
-Start infrastructure only:
-
-```bash
-docker compose up -d database mailer adminer minio createbuckets
-```
-
-> PostgreSQL is published on host port `5433` to avoid conflicts with a local PostgreSQL installation that may already use `5432`.
-
-Install PHP dependencies:
+If you run PHP on the host instead of using the PHP container:
 
 ```bash
 composer install
 ```
 
-Run migrations:
+Inside Docker, dependencies are installed by the PHP entrypoint when `vendor/` is missing:
 
 ```bash
-php bin/console doctrine:migrations:migrate
+docker compose exec php composer install
 ```
 
-Seed the administrator account:
+## 6. Run tests
 
 ```bash
-php bin/console app:seed-admin --email=admin@waves.local --password=AdminPass1
+docker compose exec php php bin/phpunit
 ```
 
-Start the API:
-
-```bash
-php -S 127.0.0.1:8000 -t public
-```
-
-Then open Swagger UI:
-
-```text
-http://127.0.0.1:8000/api/doc
-```
-
-Run tests:
+Or on the host (with PHP 8.4 + Postgres reachable via `.env`):
 
 ```bash
 php bin/phpunit
 ```
 
-## Code quality
-
-Static analysis and coding standards:
+## 7. Run linters and static analysis
 
 ```bash
-composer lint          # CS Fixer + PHPStan + Rector (dry-run)
-composer lint:cs       # PHP-CS-Fixer dry-run
-composer lint:cs-fix  # apply CS Fixer
-composer lint:phpstan  # PHPStan level 6
-composer lint:rector   # Rector dry-run
-composer rector        # apply Rector
+docker compose exec php composer lint
 ```
 
-These checks also run as separate GitHub Actions workflows:
+Individual commands:
 
-- `.github/workflows/php-cs-fixer.yml`
-- `.github/workflows/phpstan.yml`
-- `.github/workflows/rector.yml`
-- `.github/workflows/tests.yml`
-- `.github/workflows/deploy.yml` (push to `main` or manual)
+```bash
+docker compose exec php composer lint:cs       # PHP-CS-Fixer (dry-run)
+docker compose exec php composer lint:cs-fix  # apply CS Fixer
+docker compose exec php composer lint:phpstan  # PHPStan level 6
+docker compose exec php composer lint:rector   # Rector (dry-run)
+docker compose exec php composer rector        # apply Rector
+```
+
+On the host:
+
+```bash
+composer lint
+```
+
+## 8. Useful Symfony commands
+
+```bash
+docker compose exec php php bin/console doctrine:migrations:migrate
+docker compose exec php php bin/console lint:container
+docker compose exec php php bin/console doctrine:schema:validate
+```
+
+## 9. Stop the stack
+
+```bash
+docker compose down
+```
 
 ---
 
