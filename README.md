@@ -419,15 +419,15 @@ Development follows this order.
 
 ## Phase 1 — Foundation
 
-* [ ] Initialize Symfony project
-* [ ] Configure Docker
-* [ ] Configure PostgreSQL
-* [ ] Configure Doctrine
-* [ ] Configure migrations
-* [ ] Configure environment variables
-* [ ] Create User entity
-* [ ] Create roles
-* [ ] Configure password hashing
+* [x] Initialize Symfony project
+* [x] Configure Docker
+* [x] Configure PostgreSQL
+* [x] Configure Doctrine
+* [x] Configure migrations
+* [x] Configure environment variables
+* [x] Create User entity
+* [x] Create roles
+* [x] Configure password hashing
 
 ## Phase 2 — Authentication
 
@@ -731,13 +731,23 @@ Start infrastructure:
 docker compose up -d
 ```
 
+Local services:
+
+```text
+PostgreSQL → 127.0.0.1:5433
+Mailpit UI → http://127.0.0.1:8025
+Adminer    → http://127.0.0.1:8080
+```
+
+> PostgreSQL is published on host port `5433` to avoid conflicts with a local PostgreSQL installation that may already use `5432`.
+
 Install PHP dependencies:
 
 ```bash
 composer install
 ```
 
-Run migrations:
+Ensure the PHP `pdo_pgsql` extension is enabled, then run migrations:
 
 ```bash
 php bin/console doctrine:migrations:migrate
