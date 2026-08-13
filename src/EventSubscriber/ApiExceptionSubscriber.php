@@ -56,6 +56,7 @@ final class ApiExceptionSubscriber implements EventSubscriberInterface
         if ($throwable instanceof HttpExceptionInterface) {
             $status = $throwable->getStatusCode();
             $code = match ($status) {
+                Response::HTTP_BAD_REQUEST => 'bad_request',
                 Response::HTTP_CONFLICT => 'conflict',
                 Response::HTTP_UNAUTHORIZED => 'unauthorized',
                 Response::HTTP_FORBIDDEN => 'forbidden',

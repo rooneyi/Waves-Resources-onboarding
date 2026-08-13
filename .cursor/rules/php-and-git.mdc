@@ -1,0 +1,35 @@
+---
+description: PHP file conventions and git commit identity
+globs: "**/*.php"
+alwaysApply: true
+---
+
+# PHP & Git conventions
+
+## New PHP files
+
+Every new PHP file MUST start with:
+
+```php
+<?php
+
+declare(strict_types=1);
+```
+
+Then optional file docblock with the repository author:
+
+```php
+/**
+ * @author rooneyi <22ki129@esisalama.org>
+ */
+```
+
+Then `namespace`, then the type declaration (`final class`, `interface`, `enum`, or `trait`).
+
+Do not omit `declare(strict_types=1);`.
+
+## Git commits
+
+- Author and committer must be: `rooneyi <22ki129@esisalama.org>`
+- Never add `Co-authored-by:` trailers (including Cursor)
+- Never use the agent identity as author or committer

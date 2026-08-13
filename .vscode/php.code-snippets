@@ -1,0 +1,82 @@
+{
+  "PHP Class": {
+    "prefix": "php-class",
+    "description": "PHP class with strict_types and git author",
+    "body": [
+      "<?php",
+      "",
+      "declare(strict_types=1);",
+      "",
+      "/**",
+      " * @author rooneyi <22ki129@esisalama.org>",
+      " */",
+      "",
+      "namespace ${1:App};",
+      "",
+      "final class ${2:ClassName}",
+      "{",
+      "    $0",
+      "}"
+    ]
+  },
+  "PHP Interface": {
+    "prefix": "php-interface",
+    "description": "PHP interface with strict_types and git author",
+    "body": [
+      "<?php",
+      "",
+      "declare(strict_types=1);",
+      "",
+      "/**",
+      " * @author rooneyi <22ki129@esisalama.org>",
+      " */",
+      "",
+      "namespace ${1:App};",
+      "",
+      "interface ${2:InterfaceName}",
+      "{",
+      "    $0",
+      "}"
+    ]
+  },
+  "PHP Enum": {
+    "prefix": "php-enum",
+    "description": "PHP enum with strict_types and git author",
+    "body": [
+      "<?php",
+      "",
+      "declare(strict_types=1);",
+      "",
+      "/**",
+      " * @author rooneyi <22ki129@esisalama.org>",
+      " */",
+      "",
+      "namespace ${1:App};",
+      "",
+      "enum ${2:EnumName}",
+      "{",
+      "    $0",
+      "}"
+    ]
+  },
+  "PHP Trait": {
+    "prefix": "php-trait",
+    "description": "PHP trait with strict_types and git author",
+    "body": [
+      "<?php",
+      "",
+      "declare(strict_types=1);",
+      "",
+      "/**",
+      " * @author rooneyi <22ki129@esisalama.org>",
+      " */",
+      "",
+      "namespace ${1:App};",
+      "",
+      "trait ${2:TraitName}",
+      "{",
+      "    $0",
+      "}"
+    ]
+  }
+}

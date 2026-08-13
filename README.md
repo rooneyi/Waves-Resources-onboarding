@@ -433,7 +433,7 @@ Development follows this order.
 
 * [x] Registration
 * [x] Password validation
-* [ ] Email verification
+* [x] Email verification
 * [ ] Login
 * [ ] Access tokens
 * [ ] Refresh tokens
