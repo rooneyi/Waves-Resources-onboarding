@@ -468,15 +468,15 @@ Development follows this order.
 
 ## Phase 6 — Quality
 
-* [ ] OpenAPI documentation
-* [ ] Health check
-* [ ] Structured logging
-* [ ] Seeded administrator
-* [ ] Integration tests
-* [ ] Security tests
-* [ ] Docker verification
-* [ ] README completion
-* [ ] GitHub Actions CI
+* [x] OpenAPI documentation
+* [x] Health check
+* [x] Structured logging
+* [x] Seeded administrator
+* [x] Integration tests
+* [x] Security tests
+* [x] Docker verification
+* [x] README completion
+* [x] GitHub Actions CI
 
 ## Optional Stretch Goals
 
@@ -749,10 +749,28 @@ Install PHP dependencies:
 composer install
 ```
 
-Ensure the PHP `pdo_pgsql` extension is enabled, then run migrations:
+Run migrations:
 
 ```bash
 php bin/console doctrine:migrations:migrate
+```
+
+Seed the administrator account:
+
+```bash
+php bin/console app:seed-admin --email=admin@waves.local --password=AdminPass1
+```
+
+Start the API:
+
+```bash
+php -S 127.0.0.1:8000 -t public
+```
+
+Then open Swagger UI:
+
+```text
+http://127.0.0.1:8000/api/doc
 ```
 
 Run tests:
@@ -802,7 +820,16 @@ Profile
 
 # API Documentation
 
-The API exposes OpenAPI documentation.
+The API exposes OpenAPI documentation via NelmioApiDocBundle.
+
+- Swagger UI: http://127.0.0.1:8000/api/doc
+- OpenAPI JSON: http://127.0.0.1:8000/api/doc.json
+
+Use the **Authorize** button in Swagger UI and provide:
+
+```text
+Bearer <access_token>
+```
 
 The documentation must allow a reviewer to understand and exercise the API without reading the source code.
 
