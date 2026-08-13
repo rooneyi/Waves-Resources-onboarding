@@ -91,7 +91,7 @@ Feature quantity is intentionally secondary to correctness and engineering quali
 | Language | PHP 8.4+ |
 | Database | PostgreSQL |
 | ORM | Doctrine ORM |
-| Authentication | JWT + Refresh Tokens |
+| Authentication | JWT (HS256) + Refresh Tokens |
 | Password Hashing | Argon2id |
 | Object Storage | MinIO / S3-compatible storage |
 | Email | Symfony Mailer |
@@ -434,11 +434,11 @@ Development follows this order.
 * [x] Registration
 * [x] Password validation
 * [x] Email verification
-* [ ] Login
-* [ ] Access tokens
-* [ ] Refresh tokens
-* [ ] Logout
-* [ ] Rate limiting
+* [x] Login
+* [x] Access tokens
+* [x] Refresh tokens
+* [x] Logout
+* [x] Rate limiting
 
 ## Phase 3 — Authorization
 
@@ -816,11 +816,12 @@ APP_SECRET=
 
 DATABASE_URL=
 
-JWT_SECRET_KEY=
-JWT_PUBLIC_KEY=
-JWT_PASSPHRASE=
+JWT_SECRET=
+JWT_ACCESS_TOKEN_TTL=900
+JWT_REFRESH_TOKEN_TTL=2592000
 
 MAILER_DSN=
+MAILER_FROM=
 
 S3_ENDPOINT=
 S3_ACCESS_KEY=

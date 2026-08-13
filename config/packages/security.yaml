@@ -5,7 +5,6 @@ security:
         App\Entity\User:
             algorithm: argon2id
 
-    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         app_user_provider:
             entity:
@@ -16,11 +15,24 @@ security:
         dev:
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
+        auth:
+            pattern: ^/api/v1/auth/(register|login|verify-email|refresh|logout)$
+            security: false
+        api:
+            pattern: ^/api
+            lazy: true
+            stateless: true
+            provider: app_user_provider
+            custom_authenticators:
+                - App\Security\JwtAuthenticator
+            entry_point: App\Security\JwtAuthenticator
         main:
             lazy: true
             provider: app_user_provider
 
-    access_control: []
+    access_control:
+        - { path: ^/api/v1/auth/(register|login|verify-email|refresh|logout)$, roles: PUBLIC_ACCESS }
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:

@@ -3,9 +3,19 @@ framework:
     session: true
     serializer:
         enabled: true
+    rate_limiter:
+        login:
+            policy: fixed_window
+            limit: 5
+            interval: '15 minutes'
 
 when@test:
     framework:
         test: true
         session:
             storage_factory_id: session.storage.factory.mock_file
+        rate_limiter:
+            login:
+                policy: fixed_window
+                limit: 1000
+                interval: '1 minute'
