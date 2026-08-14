@@ -68,7 +68,14 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4">
-      <div className="w-full max-w-md space-y-4">
+      <div className="w-full max-w-md space-y-6">
+        {/* Small app header */}
+        <div className="flex items-center justify-center">
+          <div className="inline-flex items-center gap-2">
+            <div className="w-8 h-8 rounded-md bg-indigo-600 flex items-center justify-center text-white font-bold">W</div>
+            <div className="text-lg font-semibold">Waves Resources</div>
+          </div>
+        </div>
         {/* Bouton Retour */}
         <Button variant="ghost" size="sm" asChild className="gap-2">
           <Link href="/">
@@ -77,7 +84,7 @@ export default function Register() {
           </Link>
         </Button>
 
-        <Card className="shadow-lg border-slate-200/80 dark:border-slate-800">
+        <Card className="shadow-lg ring-1 ring-slate-200/60 dark:ring-slate-800/60 border border-transparent">
           <CardHeader className="space-y-1 text-center">
             <CardTitle className="text-2xl font-bold tracking-tight">
               Créer un compte
