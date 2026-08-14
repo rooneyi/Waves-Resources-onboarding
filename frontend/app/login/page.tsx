@@ -3,6 +3,7 @@ import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { login } from '../../lib/api'
 import { useRouter } from 'next/navigation'
+import { Toast } from '../../components/ui/Toast'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -16,6 +17,9 @@ export default function Login() {
     setLoading(true)
     setError(null)
     try {
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { setError('Invalid email'); setLoading(false); return }
+      if (!password) { setError('Password is required'); setLoading(false); return }
+
       await login({ email, password })
       router.push('/me')
     } catch (err: any) {
@@ -32,7 +36,7 @@ export default function Login() {
         <div className="mt-4">
           <Button type="submit" disabled={loading}>{loading ? 'Signing in...' : 'Sign in'}</Button>
         </div>
-        {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
+        {error && <Toast message={error} type="error" onClose={()=>setError(null)} />}
       </form>
     </div>
   )

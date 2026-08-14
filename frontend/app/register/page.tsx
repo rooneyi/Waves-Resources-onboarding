@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
 import { register } from '../../lib/api'
+import { Toast } from '../../components/ui/Toast'
 
 export default function Register() {
   const [email, setEmail] = useState('')
@@ -14,6 +15,11 @@ export default function Register() {
     e.preventDefault()
     setLoading(true)
     setMessage(null)
+    // simple client-side validation
+    if (!fullName.trim()) { setMessage('Full name is required'); setLoading(false); return }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { setMessage('Invalid email'); setLoading(false); return }
+    if (password.length < 8) { setMessage('Password must be at least 8 characters'); setLoading(false); return }
+
     try {
       await register({ email, fullName, password })
       setMessage('Registered — check your email to verify.')
@@ -32,7 +38,7 @@ export default function Register() {
         <div className="mt-4">
           <Button type="submit" disabled={loading}>{loading ? 'Creating...' : 'Create account'}</Button>
         </div>
-        {message && <p className="mt-4 text-sm text-slate-600">{message}</p>}
+        {message && <Toast message={message} type={message.includes('failed')||message.includes('Invalid') ? 'error' : 'success'} onClose={()=>setMessage(null)} />}
       </form>
     </div>
   )
