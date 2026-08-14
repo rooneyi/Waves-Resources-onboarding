@@ -1,4 +1,5 @@
 import React from 'react'
+import { Controller } from 'react-hook-form'
 
 export function Form({ children }: any) {
   return <>{children}</>
@@ -27,8 +28,19 @@ export function FormMessage({ children, className = '' }: any) {
 
 type FormFieldRender = (args: { field: any }) => React.ReactNode
 
-export function FormField({ name, render, ...rest }: { name: string; render: FormFieldRender; control?: any; [key: string]: any }) {
-  // Provide a minimal fake `field` object so inputs can mount without runtime errors.
+export function FormField({ name, render, control, ...rest }: { name: string; render: FormFieldRender; control?: any; [key: string]: any }) {
+  // If a react-hook-form control is provided, use Controller to bind the input
+  if (control) {
+    return (
+      <Controller
+        control={control}
+        name={name}
+        render={({ field }) => render({ field })}
+      />
+    )
+  }
+
+  // Fallback: minimal fake `field` object so inputs can mount without runtime errors.
   const field = {
     name,
     value: undefined,
