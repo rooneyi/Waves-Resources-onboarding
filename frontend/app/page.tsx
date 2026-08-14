@@ -1,67 +1,141 @@
-"use client"
-
 import Link from 'next/link'
-import { ArrowRight, User, LogIn, UserPlus, Sparkles } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import Card from '@/components/ui/Card'
-import CardHeader from '@/components/ui/CardHeader'
-import CardContent from '@/components/ui/CardContent'
-import CardTitle from '@/components/ui/CardTitle'
-import CardDescription from '@/components/ui/CardDescription'
-import Badge from '@/components/ui/Badge'
+import { ArrowRight, Layers, Layout, ShieldCheck, Sparkles, User, LogIn, UserPlus } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function Home() {
   return (
-    <main className="min-h-screen w-full bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-4">
-      {/* Container principal avec effet de halo subtil */}
-      <div className="relative w-full max-w-lg">
-        <div className="absolute -top-12 -left-12 w-48 h-48 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
-        
-        <Card className="shadow-xl border-slate-200/80 dark:border-slate-800 backdrop-blur-sm">
-          <CardHeader className="space-y-3 pb-4">
-            <div className="flex items-center justify-between">
-              <Badge variant="outline" className="gap-1 px-2.5 py-0.5 text-xs font-medium">
-                <Sparkles className="w-3 h-3 text-primary" />
-                Next.js + shadcn/ui
-              </Badge>
+    <div className="min-h-screen bg-background text-foreground flex flex-col justify-between">
+      
+      {/* 1. HEADER / NAVBAR */}
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="page-container flex h-16 items-center justify-between">
+          <div className="flex items-center gap-2 font-bold text-xl tracking-tight">
+            <div className="p-1.5 bg-primary text-primary-foreground rounded-lg">
+              <Layers className="w-5 h-5" />
             </div>
-            <CardTitle className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-50">
-              Waves Resources
-            </CardTitle>
-            <CardDescription className="text-base text-muted-foreground leading-relaxed">
-              Plateforme moderne pour explorer et gérer vos ressources frontend en toute simplicité.
-            </CardDescription>
-          </CardHeader>
+            <span>Waves<span className="text-primary">Resources</span></span>
+          </div>
 
-          <CardContent className="pt-2">
-            <div className="grid gap-3 sm:grid-cols-2">
-              {/* Action Principale - Call to Action */}
-              <Button asChild size="lg" className="sm:col-span-2 gap-2 shadow-sm font-semibold">
+          <nav className="flex items-center gap-2">
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/login" className="gap-1.5">
+                <LogIn className="w-4 h-4" />
+                Connexion
+              </Link>
+            </Button>
+            <Button asChild size="sm">
+              <Link href="/register" className="gap-1.5">
+                <UserPlus className="w-4 h-4" />
+                S'inscrire
+              </Link>
+            </Button>
+          </nav>
+        </div>
+      </header>
+
+      {/* 2. HERO SECTION */}
+      <main className="flex-1">
+        <section className="relative py-20 md:py-28 overflow-hidden">
+          {/* Effet de fond lumineux */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-primary/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+
+          <div className="page-container max-w-4xl mx-auto text-center px-4 space-y-6">
+            <Badge variant="secondary" className="px-3 py-1 text-xs sm:text-sm font-medium gap-1.5 rounded-full">
+              <Sparkles className="w-3.5 h-3.5 text-primary" />
+              Projet Frontend Next.js & shadcn/ui
+            </Badge>
+
+            <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-tight font-serif text-primary">
+              Gérez vos ressources frontend <br className="hidden sm:inline" />
+              <span className="bg-gradient-to-r from-primary via-indigo-500 to-purple-600 bg-clip-text text-transparent">
+                avec élégance et rapidité.
+              </span>
+            </h1>
+
+            <p className="max-w-2xl mx-auto text-lg text-muted-foreground sm:text-xl font-normal leading-relaxed">
+              Waves Resources regroupe l'ensemble de vos outils, composants et accès utilisateurs au même endroit dans un écosystème moderne.
+            </p>
+
+            {/* Actions CTA */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
+              <Button asChild size="lg" className="w-full sm:w-auto h-12 px-8 text-base gap-2 shadow-lg shadow-primary/25">
                 <Link href="/register">
-                  <UserPlus className="w-4 h-4" />
-                  Créer un compte
-                  <ArrowRight className="w-4 h-4 ml-auto opacity-70" />
+                  Commencer gratuitement
+                  <ArrowRight className="w-4 h-4" />
                 </Link>
               </Button>
 
-              {/* Actions Secondaires */}
-              <Button asChild variant="outline" size="lg" className="gap-2">
-                <Link href="/login">
-                  <LogIn className="w-4 h-4 text-muted-foreground" />
-                  Connexion
-                </Link>
-              </Button>
-
-              <Button asChild variant="secondary" size="lg" className="gap-2">
+              <Button asChild variant="outline" size="lg" className="w-full sm:w-auto h-12 px-8 text-base gap-2">
                 <Link href="/me">
                   <User className="w-4 h-4 text-muted-foreground" />
-                  Mon Profil
+                  Accéder à mon profil
                 </Link>
               </Button>
             </div>
-          </CardContent>
-        </Card>
-      </div>
-    </main>
+          </div>
+        </section>
+
+        {/* 3. SECTION FONCTIONNALITÉS / STRUCTURE */}
+        <section className="py-12 bg-muted/40 border-y">
+          <div className="container max-w-5xl mx-auto px-4">
+            <div className="grid md:grid-cols-3 gap-6">
+              
+              <Card className="bg-background shadow-sm border-muted">
+                <CardHeader>
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-2">
+                    <Layout className="w-5 h-5" />
+                  </div>
+                  <CardTitle className="text-lg">Design Atomique</CardTitle>
+                  <CardDescription>
+                    Construit avec Radix UI et Tailwind CSS pour une flexibilité totale et un style épuré.
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+
+              <Card className="bg-background shadow-sm border-muted">
+                <CardHeader>
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-2">
+                    <ShieldCheck className="w-5 h-5" />
+                  </div>
+                  <CardTitle className="text-lg">Authentification</CardTitle>
+
+                  <CardDescription>
+                    Espaces dédiés pour la gestion des comptes, la connexion sécurisée et les profils.
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+
+              <Card className="bg-background shadow-sm border-muted">
+                <CardHeader>
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-2">
+                    <Sparkles className="w-5 h-5" />
+                  </div>
+                  <CardTitle className="text-lg">Prêt pour la prod</CardTitle>
+                  <CardDescription>
+                    Performances optimisées avec Next.js App Router et chargement instantané.
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* 4. FOOTER */}
+      <footer className="border-t py-6 md:py-8">
+        <div className="container max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 px-4 text-sm text-muted-foreground">
+          <p>© {new Date().getFullYear()} Waves Resources. Tous droits réservés.</p>
+          <div className="flex gap-4">
+            <Link href="/login" className="hover:underline">Connexion</Link>
+            <Link href="/register" className="hover:underline">S'inscrire</Link>
+            <Link href="/me" className="hover:underline">Profil</Link>
+          </div>
+        </div>
+      </footer>
+
+    </div>
   )
 }

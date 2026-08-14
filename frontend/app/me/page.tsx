@@ -19,18 +19,18 @@ export default function Me() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50">
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md ring-1 ring-slate-200/60">
         <div className="flex items-center gap-4 mb-4">
           <Avatar src={profile.profileImageUrl || '/placeholder-avatar.png'} size={56} />
           <div>
-            <h2 className="text-2xl font-bold">{profile.fullName}</h2>
+            <h2 className="text-2xl font-serif font-semibold">{profile.fullName}</h2>
             <p className="text-sm text-slate-500">{profile.email}</p>
           </div>
         </div>
-        <p className="mb-2"><strong>Verified:</strong> {profile.emailVerified ? 'Yes' : 'No'}</p>
+        <p className="mb-2"><strong>Vérifié :</strong> {profile.emailVerified ? 'Oui' : 'Non'}</p>
         <div className="mt-4 flex gap-3">
-          <a href="/me/edit" className="px-3 py-2 bg-slate-100 rounded">Edit</a>
-          <button onClick={async ()=>{ await logout(); window.location.href = '/login' }} className="px-3 py-2 bg-red-600 text-white rounded">Logout</button>
+          <a href="/me/edit" className="px-3 py-2 bg-slate-100 rounded">Modifier</a>
+          <button onClick={async ()=>{ await logout(); window.location.href = '/login' }} className="px-3 py-2 bg-red-600 text-white rounded">Se déconnecter</button>
         </div>
       </Card>
     </div>
