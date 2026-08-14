@@ -40,8 +40,8 @@ export default function EditProfile() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50">
       <form onSubmit={onSubmit} className="w-full max-w-md">
-        <Card>
-          <h2 className="text-2xl font-bold mb-4">Edit profile</h2>
+        <Card className="ring-1 ring-slate-200/60">
+          <h2 className="text-2xl font-serif font-semibold mb-4">Modifier le profil</h2>
           <Input label="Full name" value={fullName} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFullName(e.target.value)} />
           <Input label="Email" type="email" value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} />
           <FileInput label="Profile image" accept="image/*" onChange={(e: React.ChangeEvent<HTMLInputElement>)=>setFile(e.target.files?.[0]||null)} />

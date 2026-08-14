@@ -27,10 +27,10 @@ export default function VerifyEmail() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50">
       <form onSubmit={onSubmit} className="w-full max-w-md">
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-2xl font-bold mb-4">Verify email</h2>
+        <div className="bg-white rounded-lg shadow p-6 ring-1 ring-slate-200/60">
+          <h2 className="text-2xl font-serif font-semibold mb-4">Vérification d'email</h2>
           <Input label="Token" value={token} onChange={(e: React.ChangeEvent<HTMLInputElement>)=>setToken(e.target.value)} />
-          <div className="mt-4"><Button type="submit" disabled={loading}>{loading ? 'Verifying...' : 'Verify'}</Button></div>
+          <div className="mt-4"><Button type="submit" disabled={loading}>{loading ? 'Vérification...' : 'Vérifier'}</Button></div>
         </div>
         {message && <Toast message={message} type={message.includes('failed') ? 'error' : 'success'} onClose={()=>setMessage(null)} />}
       </form>
