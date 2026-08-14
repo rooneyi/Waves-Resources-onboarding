@@ -34,8 +34,8 @@ export default function Login() {
       <form onSubmit={onSubmit} className="w-full max-w-md">
         <Card>
           <h2 className="text-2xl font-bold mb-4">Sign in</h2>
-          <Input label="Email" type="email" value={email} onChange={e=>setEmail(e.target.value)} />
-          <Input label="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
+          <Input label="Email" type="email" value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} />
+          <Input label="Password" type="password" value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
           <div className="mt-4">
             <Button type="submit" disabled={loading}>{loading ? 'Signing in...' : 'Sign in'}</Button>
           </div>
