@@ -1,16 +1,26 @@
 import Link from 'next/link'
 import React from 'react'
+import { Button } from './Button'
 
 export function Header() {
   return (
-    <header className="w-full bg-white shadow-sm">
-      <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="font-bold">Waves</Link>
-        <nav className="flex gap-3">
-          <Link href="/register" className="text-sm text-slate-700">Register</Link>
-          <Link href="/login" className="text-sm text-slate-700">Login</Link>
-          <Link href="/me" className="text-sm text-slate-700">Profile</Link>
-          <Link href="/admin/users" className="text-sm text-slate-700">Admin</Link>
+    <header className="w-full bg-primary text-white">
+      <div className="page-container flex items-center justify-between py-4">
+        <Link href="/" className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-md bg-white/10 flex items-center justify-center text-white font-serif text-lg">W</div>
+          <div className="leading-tight">
+            <div className="font-serif text-lg font-semibold">Waves Resources</div>
+            <div className="text-xs opacity-90">Gestion et authentification</div>
+          </div>
+        </Link>
+
+        <nav className="flex items-center gap-4">
+          <Link href="/" className="text-sm text-white/90 hover:underline">Home</Link>
+          <Link href="/register" className="text-sm text-white/90 hover:underline">S'inscrire</Link>
+          <Link href="/login" className="text-sm text-white/90 hover:underline">Se connecter</Link>
+          <Button asChild size="sm" className="ml-3">
+            <Link href="/contact" className="px-3">Contact</Link>
+          </Button>
         </nav>
       </div>
     </header>
