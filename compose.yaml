@@ -39,6 +39,7 @@ services:
       S3_BUCKET: ${S3_BUCKET:-waves-profile-images}
       S3_REGION: ${S3_REGION:-us-east-1}
       DEFAULT_URI: http://localhost:8000
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000,http://nginx}
     depends_on:
       database:
         condition: service_healthy
