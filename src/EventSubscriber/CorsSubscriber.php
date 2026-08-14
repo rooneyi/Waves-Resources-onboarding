@@ -59,8 +59,23 @@ final class CorsSubscriber implements EventSubscriberInterface
         $allowedOrigins = $this->getAllowedOrigins();
         $origin = $request->headers->get('Origin');
 
-        if ($origin && (in_array('*', $allowedOrigins, true) || in_array($origin, $allowedOrigins, true))) {
-            $response->headers->set('Access-Control-Allow-Origin', $origin);
+        $allowOrigin = null;
+
+        if ($origin) {
+            if (in_array('*', $allowedOrigins, true) || in_array($origin, $allowedOrigins, true)) {
+                $allowOrigin = $origin;
+            } else {
+                // Allow any localhost origin (different ports) during local development
+                $parts = parse_url($origin);
+                $host = $parts['host'] ?? '';
+                if ($host === 'localhost' || $host === '127.0.0.1') {
+                    $allowOrigin = $origin;
+                }
+            }
+        }
+
+        if ($allowOrigin) {
+            $response->headers->set('Access-Control-Allow-Origin', $allowOrigin);
         } else {
             // fallback to first allowed origin when no Origin header present
             $response->headers->set('Access-Control-Allow-Origin', $allowedOrigins[0] ?? '*');
