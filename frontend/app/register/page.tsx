@@ -58,11 +58,20 @@ export default function Register() {
 
   async function onSubmit(data: RegisterFormValues) {
     try {
+      // Debug: indicate submit was triggered
+      // eslint-disable-next-line no-alert
+      alert('Submitting register form')
+      console.log('Register submit data:', data)
+
       await register(data)
       toast.success('Compte créé ! Vérifiez votre boîte mail pour confirmer.')
       form.reset()
     } catch (err: any) {
+      // Surface error for debugging as well
+      // eslint-disable-next-line no-alert
+      alert('Register error: ' + (err?.message || 'unknown'))
       toast.error(err?.message || "Échec de l'inscription")
+      console.error(err)
     }
   }
 
