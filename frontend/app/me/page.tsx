@@ -1,3 +1,4 @@
+"use client"
 import React, {useEffect, useState} from 'react'
 import { getProfile } from '../../lib/api'
 import { Card } from '../../components/ui/Card'
