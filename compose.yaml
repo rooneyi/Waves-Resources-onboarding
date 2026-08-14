@@ -60,6 +60,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "${FRONTEND_PORT:-3000}:3000"
+    environment:
+      - NEXT_PUBLIC_API_BASE=http://nginx
 
 volumes:
 ###> doctrine/doctrine-bundle ###
