@@ -56,10 +56,10 @@ services:
   frontend:
     profiles: ["frontend"]
     build:
-      context: ./docker/frontend
+      context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "${FRONTEND_PORT:-3000}:80"
+      - "${FRONTEND_PORT:-3000}:3000"
 
 volumes:
 ###> doctrine/doctrine-bundle ###
