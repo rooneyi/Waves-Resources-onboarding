@@ -1,5 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import { getProfile } from '../../lib/api'
+import { Card } from '../../components/ui/Card'
+import { Avatar } from '../../components/ui/Avatar'
 
 export default function Me() {
   const [profile, setProfile] = useState<any>(null)
@@ -15,12 +17,16 @@ export default function Me() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow">
-        <h2 className="text-2xl font-bold mb-4">Profile</h2>
-        <p className="mb-2"><strong>Name:</strong> {profile.fullName}</p>
-        <p className="mb-2"><strong>Email:</strong> {profile.email}</p>
+      <Card className="w-full max-w-md">
+        <div className="flex items-center gap-4 mb-4">
+          <Avatar src={profile.profileImageUrl || '/placeholder-avatar.png'} size={56} />
+          <div>
+            <h2 className="text-2xl font-bold">{profile.fullName}</h2>
+            <p className="text-sm text-slate-500">{profile.email}</p>
+          </div>
+        </div>
         <p className="mb-2"><strong>Verified:</strong> {profile.emailVerified ? 'Yes' : 'No'}</p>
-      </div>
+      </Card>
     </div>
   )
 }

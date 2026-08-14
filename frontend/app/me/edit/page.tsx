@@ -5,6 +5,7 @@ import { Input } from '../../../components/ui/Input'
 import { Button } from '../../../components/ui/Button'
 import { FileInput } from '../../../components/ui/FileInput'
 import { useRouter } from 'next/navigation'
+import { Card } from '../../../components/ui/Card'
 
 export default function EditProfile() {
   const [profile, setProfile] = useState<any>(null)
@@ -38,14 +39,16 @@ export default function EditProfile() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50">
-      <form onSubmit={onSubmit} className="w-full max-w-md bg-white p-8 rounded-lg shadow">
-        <h2 className="text-2xl font-bold mb-4">Edit profile</h2>
-        <Input label="Full name" value={fullName} onChange={e=>setFullName(e.target.value)} />
-        <Input label="Email" type="email" value={email} onChange={e=>setEmail(e.target.value)} />
-        <FileInput label="Profile image" accept="image/*" onChange={(e:any)=>setFile(e.target.files?.[0]||null)} />
-        <div className="mt-4">
-          <Button type="submit" disabled={loading}>{loading ? 'Saving...' : 'Save'}</Button>
-        </div>
+      <form onSubmit={onSubmit} className="w-full max-w-md">
+        <Card>
+          <h2 className="text-2xl font-bold mb-4">Edit profile</h2>
+          <Input label="Full name" value={fullName} onChange={e=>setFullName(e.target.value)} />
+          <Input label="Email" type="email" value={email} onChange={e=>setEmail(e.target.value)} />
+          <FileInput label="Profile image" accept="image/*" onChange={(e:any)=>setFile(e.target.files?.[0]||null)} />
+          <div className="mt-4">
+            <Button type="submit" disabled={loading}>{loading ? 'Saving...' : 'Save'}</Button>
+          </div>
+        </Card>
       </form>
     </div>
   )

@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import { Button } from '../../components/ui/Button'
 import { Input } from '../../components/ui/Input'
+import { Card } from '../../components/ui/Card'
 import { register } from '../../lib/api'
 import { Toast } from '../../components/ui/Toast'
 
@@ -30,14 +31,16 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-white">
-      <form onSubmit={onSubmit} className="w-full max-w-md bg-white p-8 rounded-lg shadow">
-        <h2 className="text-2xl font-bold mb-4">Create account</h2>
-        <Input label="Full name" value={fullName} onChange={e=>setFullName(e.target.value)} />
-        <Input label="Email" type="email" value={email} onChange={e=>setEmail(e.target.value)} />
-        <Input label="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
-        <div className="mt-4">
-          <Button type="submit" disabled={loading}>{loading ? 'Creating...' : 'Create account'}</Button>
-        </div>
+      <form onSubmit={onSubmit} className="w-full max-w-md">
+        <Card>
+          <h2 className="text-2xl font-bold mb-4">Create account</h2>
+          <Input label="Full name" value={fullName} onChange={e=>setFullName(e.target.value)} />
+          <Input label="Email" type="email" value={email} onChange={e=>setEmail(e.target.value)} />
+          <Input label="Password" type="password" value={password} onChange={e=>setPassword(e.target.value)} />
+          <div className="mt-4">
+            <Button type="submit" disabled={loading}>{loading ? 'Creating...' : 'Create account'}</Button>
+          </div>
+        </Card>
         {message && <Toast message={message} type={message.includes('failed')||message.includes('Invalid') ? 'error' : 'success'} onClose={()=>setMessage(null)} />}
       </form>
     </div>
