@@ -101,3 +101,20 @@ export async function uploadProfileImage(file: File) {
 
   return await res.json()
 }
+
+export function listUsers(query: { page?: number, limit?: number, role?: string, verified?: boolean, sort?: string, direction?: string } = {}) {
+  const params = new URLSearchParams()
+  if (query.page) params.set('page', String(query.page))
+  if (query.limit) params.set('limit', String(query.limit))
+  if (query.role) params.set('role', query.role)
+  if (typeof query.verified === 'boolean') params.set('verified', String(query.verified))
+  if (query.sort) params.set('sort', query.sort)
+  if (query.direction) params.set('direction', query.direction)
+
+  const qs = params.toString() ? `?${params.toString()}` : ''
+  return request(`/api/v1/admin/users${qs}`, { method: 'GET' })
+}
+
+export async function verifyEmail(body: { token: string }) {
+  return request('/api/v1/auth/verify-email', { method: 'POST', body: JSON.stringify(body) })
+}

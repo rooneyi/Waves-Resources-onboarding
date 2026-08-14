@@ -1,6 +1,7 @@
 "use client"
 import React, {useEffect, useState} from 'react'
-import { getProfile } from '../../lib/api'
+import { getProfile, logout } from '../../lib/api'
+import { useRouter } from 'next/navigation'
 import { Card } from '../../components/ui/Card'
 import { Avatar } from '../../components/ui/Avatar'
 
@@ -27,6 +28,10 @@ export default function Me() {
           </div>
         </div>
         <p className="mb-2"><strong>Verified:</strong> {profile.emailVerified ? 'Yes' : 'No'}</p>
+        <div className="mt-4 flex gap-3">
+          <a href="/me/edit" className="px-3 py-2 bg-slate-100 rounded">Edit</a>
+          <button onClick={async ()=>{ await logout(); window.location.href = '/login' }} className="px-3 py-2 bg-red-600 text-white rounded">Logout</button>
+        </div>
       </Card>
     </div>
   )
