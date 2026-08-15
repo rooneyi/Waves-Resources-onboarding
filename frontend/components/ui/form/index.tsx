@@ -1,7 +1,11 @@
 import React from 'react'
-import { Controller } from 'react-hook-form'
+import { Controller, FormProvider } from 'react-hook-form'
 
-export function Form({ children }: any) {
+export function Form({ children, ...form }: any) {
+  // If form methods are passed (useForm result), provide them via FormProvider
+  if (Object.keys(form).length) {
+    return <FormProvider {...form}>{children}</FormProvider>
+  }
   return <>{children}</>
 }
 
@@ -26,7 +30,7 @@ export function FormMessage({ children, className = '' }: any) {
   return <p className={`text-sm text-red-600 ${className}`}>{children}</p>
 }
 
-type FormFieldRender = (args: { field: any }) => React.ReactNode
+type FormFieldRender = (args: { field: any; error?: any }) => React.ReactNode
 
 export function FormField({ name, render, control, ...rest }: { name: string; render: FormFieldRender; control?: any; [key: string]: any }) {
   // If a react-hook-form control is provided, use Controller to bind the input
@@ -35,7 +39,7 @@ export function FormField({ name, render, control, ...rest }: { name: string; re
       <Controller
         control={control}
         name={name}
-        render={({ field }) => render({ field })}
+        render={({ field, fieldState }) => render({ field, error: fieldState.error })}
       />
     )
   }

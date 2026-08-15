@@ -58,19 +58,26 @@ export default function Register() {
 
   async function onSubmit(data: RegisterFormValues) {
     try {
-      // Debug: indicate submit was triggered
-      // eslint-disable-next-line no-alert
-      alert('Submitting register form')
-      console.log('Register submit data:', data)
-
       await register(data)
       toast.success('Compte créé ! Vérifiez votre boîte mail pour confirmer.')
       form.reset()
     } catch (err: any) {
-      // Surface error for debugging as well
-      // eslint-disable-next-line no-alert
-      alert('Register error: ' + (err?.message || 'unknown'))
-      toast.error(err?.message || "Échec de l'inscription")
+      let msg = err?.message || "Échec de l'inscription"
+      let parsed: any = null
+      try {
+        parsed = JSON.parse(msg)
+        if (parsed?.error?.message) msg = parsed.error.message
+        else if (parsed?.message) msg = parsed.message
+      } catch (e) {
+        // ignore
+      }
+
+      // If server reports an existing account, attach error to email field
+      if ((parsed && parsed?.error?.code === 'conflict') || msg.toLowerCase().includes('account with this email') || msg.toLowerCase().includes('email')) {
+        form.setError('email', { type: 'server', message: msg })
+      }
+
+      toast.error(msg)
       console.error(err)
     }
   }
@@ -111,7 +118,7 @@ export default function Register() {
                 <FormField
                   control={form.control}
                   name="fullName"
-                  render={({ field }) => (
+                  render={({ field, error }) => (
                     <FormItem>
                       <FormLabel>Nom complet</FormLabel>
                       <FormControl>
@@ -121,7 +128,7 @@ export default function Register() {
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage>{error?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
@@ -130,7 +137,7 @@ export default function Register() {
                 <FormField
                   control={form.control}
                   name="email"
-                  render={({ field }) => (
+                  render={({ field, error }) => (
                     <FormItem>
                       <FormLabel>Adresse Email</FormLabel>
                       <FormControl>
@@ -141,7 +148,7 @@ export default function Register() {
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage>{error?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
@@ -150,7 +157,7 @@ export default function Register() {
                 <FormField
                   control={form.control}
                   name="password"
-                  render={({ field }) => (
+                  render={({ field, error }) => (
                     <FormItem>
                       <FormLabel>Mot de passe</FormLabel>
                       <FormControl>
@@ -177,7 +184,7 @@ export default function Register() {
                           </Button>
                         </div>
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage>{error?.message}</FormMessage>
                     </FormItem>
                   )}
                 />
