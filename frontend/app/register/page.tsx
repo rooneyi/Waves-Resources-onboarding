@@ -182,7 +182,7 @@ export default function Register() {
                   )}
                 />
 
-                <Button type="submit" className="w-full gap-2 mt-2" disabled={isLoading}>
+                <Button type="submit" size="lg" className="w-full h-12 gap-2 mt-2" disabled={isLoading}>
                   {isLoading ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />

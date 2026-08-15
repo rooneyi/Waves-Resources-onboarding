@@ -9,31 +9,7 @@ export default function Home() {
     <div className="min-h-screen bg-background text-foreground flex flex-col justify-between">
       
       {/* 1. HEADER / NAVBAR */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="page-container flex h-16 items-center justify-between">
-          <div className="flex items-center gap-2 font-bold text-xl tracking-tight">
-            <div className="p-1.5 bg-primary text-primary-foreground rounded-lg">
-              <Layers className="w-5 h-5" />
-            </div>
-            <span>Waves<span className="text-primary">Resources</span></span>
-          </div>
 
-          <nav className="flex items-center gap-2">
-            <Button asChild variant="ghost" size="sm">
-              <Link href="/login" className="gap-1.5">
-                <LogIn className="w-4 h-4" />
-                Connexion
-              </Link>
-            </Button>
-            <Button asChild size="sm">
-              <Link href="/register" className="gap-1.5">
-                <UserPlus className="w-4 h-4" />
-                S'inscrire
-              </Link>
-            </Button>
-          </nav>
-        </div>
-      </header>
 
       {/* 2. HERO SECTION */}
       <main className="flex-1">
@@ -43,7 +19,6 @@ export default function Home() {
 
           <div className="page-container max-w-4xl mx-auto text-center px-4 space-y-6">
             <Badge variant="secondary" className="px-3 py-1 text-xs sm:text-sm font-medium gap-1.5 rounded-full">
-              <Sparkles className="w-3.5 h-3.5 text-primary" />
               Projet Frontend Next.js & shadcn/ui
             </Badge>
 
@@ -59,17 +34,17 @@ export default function Home() {
             </p>
 
             {/* Actions CTA */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
-              <Button asChild size="lg" className="w-full sm:w-auto h-12 px-8 text-base gap-2 shadow-lg shadow-primary/25">
-                <Link href="/register">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-6">
+              <Button asChild size="lg" className="w-full sm:w-auto h-14 px-10 text-base gap-3 cta-primary">
+                <Link href="/register" className="flex items-center gap-3">
                   Commencer gratuitement
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-5 h-5" />
                 </Link>
               </Button>
 
-              <Button asChild variant="outline" size="lg" className="w-full sm:w-auto h-12 px-8 text-base gap-2">
-                <Link href="/me">
-                  <User className="w-4 h-4 text-muted-foreground" />
+              <Button asChild variant="outline" size="lg" className="w-full sm:w-auto h-14 px-8 text-base gap-2 border-white/20 bg-white/5">
+                <Link href="/me" className="flex items-center gap-2">
+                  <User className="w-4 h-4 text-white/90" />
                   Accéder à mon profil
                 </Link>
               </Button>

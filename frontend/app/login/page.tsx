@@ -37,7 +37,7 @@ export default function Login() {
           <Input label="Email" type="email" value={email} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} />
           <Input label="Password" type="password" value={password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)} />
           <div className="mt-4">
-            <Button type="submit" disabled={loading}>{loading ? 'Connexion...' : 'Se connecter'}</Button>
+            <Button type="submit" size="lg" className="w-full h-12" disabled={loading}>{loading ? 'Connexion...' : 'Se connecter'}</Button>
           </div>
         </Card>
         {error && <Toast message={error} type="error" onClose={()=>setError(null)} />}
